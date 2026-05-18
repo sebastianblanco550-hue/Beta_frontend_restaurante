@@ -1,5 +1,5 @@
 // --- CONFIGURACIÓN DE DESPLIEGUE ---
-const BACKEND_DOMAIN = "sistema-restaurante-ii.onrender.com";
+const BACKEND_DOMAIN = "https://beta-restaurante.onrender.com";
 const PROTOCOL_HTTP = "https://";
 const PROTOCOL_WS = "wss://";
 

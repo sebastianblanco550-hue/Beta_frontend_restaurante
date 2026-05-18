@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suscripción SaaS | La Mesa Dorada</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#f59e0b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .btn-premium {
+            background-color: #0f172a;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .btn-premium:hover {
+            background-color: #1e293b;
+            transform: translateY(-1px);
+        }
+
+        .btn-premium:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .btn-outline {
+            background-color: white;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-outline:hover {
+            background-color: #f8fafc;
+        }
+        
+        .popular-plan {
+            border-color: #f59e0b;
+            box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.1), 0 10px 10px -5px rgba(245, 158, 11, 0.04);
+            transform: scale(1.05);
+            z-index: 10;
+            position: relative;
+        }
+        
+        @media (max-width: 768px) {
+            .popular-plan {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 flex items-center justify-center relative">
+
+    <!-- Decorative Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-b from-amber-100 to-transparent rounded-full opacity-50 blur-3xl"></div>
+    </div>
+
+    <div class="w-full max-w-6xl mx-auto relative z-10 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-slate-900 mb-4">Elige tu Plan de Crecimiento</h1>
+            <p class="text-lg text-slate-500 max-w-2xl mx-auto">Tu restaurante ya está registrado. Selecciona una membresía para activar tu panel administrativo y comenzar a vender. Puedes cancelar en cualquier momento.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+            
+            <!-- Plan Base -->
+            <div class="card flex flex-col h-full hover:-translate-y-2 transition-transform">
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Base</h3>
+                    <div class="text-4xl font-bold text-slate-900 mb-2">$59.000<span class="text-lg text-slate-500 font-normal"> COP /mes</span></div>
+                    <p class="text-sm text-slate-500">Perfecto para empezar tu negocio de forma organizada.</p>
+                </div>
+                <ul class="space-y-4 mb-8 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> 1 Sede física</li>
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Usuarios ilimitados</li>
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> KDS para Cocina</li>
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Facturación y Caja</li>
+                </ul>
+                <button onclick="processPayment('Base', 59000)" class="btn-premium btn-outline">Seleccionar Base</button>
+            </div>
+
+            <!-- Plan Crecimiento -->
+            <div class="card popular-plan flex flex-col h-full">
+                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-amber-500 text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider">
+                    Más Popular
+                </div>
+                <div class="mb-8 mt-2">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Crecimiento</h3>
+                    <div class="text-4xl font-bold text-amber-500 mb-2">$89.000<span class="text-lg text-slate-500 font-normal"> COP /mes</span></div>
+                    <p class="text-sm text-slate-500">Herramientas avanzadas para expandir tus operaciones.</p>
+                </div>
+                <ul class="space-y-4 mb-8 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-amber-500"></i> Hasta 2 Sedes</li>
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-amber-500"></i> Dashboard Directivo</li>
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-amber-500"></i> Reportes Avanzados</li>
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-amber-500"></i> Soporte Prioritario 24/7</li>
+                </ul>
+                <button onclick="processPayment('Crecimiento', 89000)" class="btn-premium bg-amber-500 hover:bg-amber-600 text-slate-900 border-none">Elegir Crecimiento</button>
+            </div>
+
+            <!-- Plan Expansión -->
+            <div class="card flex flex-col h-full hover:-translate-y-2 transition-transform">
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Expansión</h3>
+                    <div class="text-4xl font-bold text-slate-900 mb-2">$129.000<span class="text-lg text-slate-500 font-normal"> COP /mes</span></div>
+                    <p class="text-sm text-slate-500">Control total y multi-empresa para franquicias.</p>
+                </div>
+                <ul class="space-y-4 mb-8 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-indigo-500"></i> 3+ Sedes Integradas</li>
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-indigo-500"></i> Multi Empresa / Franquicia</li>
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-indigo-500"></i> API e Integraciones</li>
+                    <li class="flex items-center gap-3 text-sm text-slate-700"><i data-lucide="check" class="w-5 h-5 text-indigo-500"></i> Manager Dedicado</li>
+                </ul>
+                <button onclick="processPayment('Expansión', 129000)" class="btn-premium btn-outline">Elegir Expansión</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Procesando Pago (Simulación) -->
+    <div id="payment-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center">
+            <div id="payment-loader">
+                <svg class="animate-spin w-12 h-12 text-amber-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Procesando Suscripción...</h3>
+                <p class="text-sm text-slate-500">Configurando tu plan <span id="lbl-plan" class="font-bold"></span>.</p>
+            </div>
+            
+            <div id="payment-success" class="hidden">
+                <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="check" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">¡Pago Exitoso!</h3>
+                <p class="text-sm text-slate-500 mb-6">Tu suscripción ha sido activada.</p>
+                <button onclick="window.location.href='login.html'" class="btn-premium bg-amber-500 hover:bg-amber-600 text-slate-900 border-none">
+                    Ir a tu panel <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <div id="payment-error" class="hidden text-red-500 text-sm mt-4 font-semibold"></div>
+        </div>
+    </div>
+
+    <script src="app.js?v=2.2"></script>
+    <script>
+        lucide.createIcons();
+
+        // Obtener el ID del restaurante desde la URL o el localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const restId = urlParams.get('id') || localStorage.getItem('temp_pay_id');
+
+        if (!restId) {
+            alert("No se identificó el restaurante. Por favor inicia sesión.");
+            window.location.href = 'login.html';
+        }
+
+        async function processPayment(planName, price) {
+            document.getElementById('lbl-plan').innerText = planName;
+            const modal = document.getElementById('payment-modal');
+            const loader = document.getElementById('payment-loader');
+            const success = document.getElementById('payment-success');
+            const err = document.getElementById('payment-error');
+            
+            modal.classList.remove('hidden');
+            loader.classList.remove('hidden');
+            success.classList.add('hidden');
+            err.classList.add('hidden');
+
+            try {
+                // Simulación de retraso de la pasarela de pagos
+                await new Promise(r => setTimeout(r, 2000));
+
+                const res = await fetch(`${API_BASE}/subscription/pay/${restId}`, {
+                    method: 'POST'
+                });
+
+                if (res.ok) {
+                    loader.classList.add('hidden');
+                    success.classList.remove('hidden');
+                    localStorage.removeItem('temp_pay_id'); // Limpiar el caché temporal
+                } else {
+                    loader.classList.add('hidden');
+                    err.innerText = "Hubo un error al procesar la activación. Contacta a soporte.";
+                    err.classList.remove('hidden');
+                    setTimeout(() => modal.classList.add('hidden'), 3000);
+                }
+            } catch (error) {
+                loader.classList.add('hidden');
+                err.innerText = "Error de red. Intenta nuevamente.";
+                err.classList.remove('hidden');
+                setTimeout(() => modal.classList.add('hidden'), 3000);
+            }
+        }
+    </script>
+</body>
+</html>

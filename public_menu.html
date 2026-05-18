@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --brand: #f59e0b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 5rem;
+        }
+
+        /* ── HERO ── */
+        #hero {
+            position: relative;
+            min-height: 230px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 2rem 1.5rem 3rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            overflow: hidden;
+        }
+        #hero-bg { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;display:none; }
+        #hero-overlay { position:absolute;inset:0;background:linear-gradient(to bottom,transparent 20%,rgba(0,0,0,.55) 100%); }
+        #hero-content { position:relative;z-index:2;text-align:center;color:#fff; }
+        #hero-logo {
+            width:68px;height:68px;
+            background:rgba(255,255,255,.15);
+            backdrop-filter:blur(10px);
+            border-radius:18px;
+            display:flex;align-items:center;justify-content:center;
+            margin:0 auto 1rem;
+            border:2px solid rgba(255,255,255,.3);
+        }
+        #rest-name { font-size:1.8rem;font-weight:900;letter-spacing:-.03em;text-shadow:0 2px 16px rgba(0,0,0,.4); }
+        #rest-subtitle { font-size:.88rem;font-weight:500;opacity:.85;margin-top:.25rem; }
+        #hero-controls { position:absolute;top:.9rem;right:.9rem;z-index:3; }
+        .hero-btn {
+            width:36px;height:36px;border-radius:50%;
+            background:rgba(255,255,255,.2);backdrop-filter:blur(8px);
+            border:1px solid rgba(255,255,255,.3);color:#fff;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;transition:background .2s;
+        }
+        .hero-btn:hover { background:rgba(255,255,255,.35); }
+
+        /* ── STICKY BAR ── */
+        #bar {
+            position:sticky;top:0;z-index:40;
+            background:rgba(248,250,252,.93);
+            backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border-bottom:1px solid var(--border);
+            padding:.7rem 1rem;
+        }
+        #search-wrap { position:relative;max-width:480px;margin:0 auto .65rem; }
+        #search-wrap svg { position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);width:17px;height:17px; }
+        #search-input {
+            width:100%;background:#fff;border:1.5px solid var(--border);
+            border-radius:999px;padding:.65rem 1rem .65rem 2.6rem;
+            font-size:.88rem;color:var(--text);outline:none;font-family:inherit;
+            transition:border-color .2s,box-shadow .2s;
+        }
+        #search-input:focus { border-color:var(--brand);box-shadow:0 0 0 3px rgba(245,158,11,.15); }
+        #cats { display:flex;gap:.45rem;overflow-x:auto;max-width:480px;margin:0 auto;padding-bottom:2px; }
+        #cats::-webkit-scrollbar { display:none; }
+        .cat {
+            flex-shrink:0;padding:.4rem 1rem;border-radius:999px;
+            border:1.5px solid var(--border);background:#fff;
+            color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;
+            transition:all .18s;font-family:inherit;
+        }
+        .cat:hover { border-color:var(--brand);color:var(--brand); }
+        .cat.on { background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 4px 12px rgba(245,158,11,.35); }
+
+        /* ── MENU GRID ── */
+        #menu-wrap { max-width:480px;margin:1.25rem auto 0;padding:0 1rem; }
+        .sec-lbl {
+            font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+            color:var(--muted);margin:1.4rem 0 .65rem;
+        }
+        .pcard {
+            background:var(--card);border-radius:14px;border:1.5px solid var(--border);
+            display:flex;gap:.85rem;padding:.9rem;margin-bottom:.65rem;
+            transition:transform .15s,box-shadow .15s,border-color .15s;
+        }
+        .pcard:hover { border-color:rgba(245,158,11,.4);box-shadow:0 4px 18px rgba(0,0,0,.07); }
+        .pcard:active { transform:scale(.98); }
+        .picon {
+            width:68px;height:68px;border-radius:11px;
+            background:#f8fafc;border:1.5px solid var(--border);
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+        }
+        .pbody { flex:1;min-width:0; }
+        .pname { font-size:.93rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.15rem; }
+        .pcat { font-size:.7rem;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem; }
+        .pdesc { font-size:.78rem;color:var(--muted);line-height:1.45;margin-bottom:.45rem; }
+        .pfooter { display:flex;align-items:center;justify-content:space-between; }
+        .pprice { font-size:1.05rem;font-weight:900;color:var(--text); }
+        .badge { font-size:.68rem;font-weight:700;padding:.22rem .55rem;border-radius:999px; }
+        .ok { background:#dcfce7;color:#15803d; }
+        .out { background:#fee2e2;color:#b91c1c; }
+
+        /* ── SKELETON ── */
+        .sk { background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:sh 1.4s infinite;border-radius:8px; }
+        @keyframes sh { 0%{background-position:200% 0}100%{background-position:-200% 0} }
+
+        /* ── NEQUI ── */
+        #nequi-wrap { max-width:480px;margin:1.75rem auto 0;padding:0 1rem; }
+        .ncard {
+            background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+            border-radius:18px;padding:1.6rem;text-align:center;color:#fff;
+            box-shadow:0 8px 30px rgba(79,70,229,.35);
+        }
+        .ncard h3 { font-size:1.15rem;font-weight:800;margin:.65rem 0 .2rem; }
+        .ncard p { font-size:.82rem;opacity:.8;margin-bottom:.85rem; }
+        .nnum { font-size:1.75rem;font-weight:900;letter-spacing:.05em;margin-bottom:.85rem; }
+        .ncard img { width:152px;height:152px;object-fit:contain;border-radius:12px;border:3px solid rgba(255,255,255,.3); }
+
+        /* ── EMPTY ── */
+        .empty { text-align:center;padding:3rem 1rem;color:var(--muted); }
+
+        /* ── FOOTER ── */
+        footer { max-width:480px;margin:2rem auto 0;padding:1rem;text-align:center;font-size:.76rem;color:var(--muted); }
+
+        /* ── DARK ── */
+        body.dark {
+            --bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--muted:#94a3b8;--border:#334155;
+        }
+        body.dark #bar { background:rgba(15,23,42,.93); }
+        body.dark #search-input { background:#1e293b;color:#f1f5f9;border-color:#334155; }
+        body.dark .cat { background:#1e293b;color:#94a3b8;border-color:#334155; }
+        body.dark .picon { background:#0f172a; }
+    </style>
+</head>
+<body>
+
+<div id="hero">
+    <div id="hero-controls">
+        <button class="hero-btn" onclick="toggleDark()" title="Tema">
+            <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+            </svg>
+        </button>
+    </div>
+    <img id="hero-bg" src="" alt="">
+    <div id="hero-overlay"></div>
+    <div id="hero-content">
+        <div id="hero-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"
+                fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 11l19-9-9 19-2-8-8-2z"/>
+            </svg>
+        </div>
+        <h1 id="rest-name">Cargando…</h1>
+        <p id="rest-subtitle">Menú Digital</p>
+    </div>
+</div>
+
+<div id="bar">
+    <div id="search-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="search-input" placeholder="¿Qué se te antoja hoy?" oninput="filterMenu()">
+    </div>
+    <div id="cats">
+        <button class="cat on" id="cat-Todos" onclick="selectCat('Todos')">Todos</button>
+    </div>
+</div>
+
+<div id="menu-wrap">
+    <div id="skeletons">
+        <div class="pcard" style="pointer-events:none">
+            <div class="sk picon"></div>
+            <div class="pbody">
+                <div class="sk" style="height:13px;width:65%;margin-bottom:7px"></div>
+                <div class="sk" style="height:10px;width:38%;margin-bottom:9px"></div>
+                <div class="sk" style="height:10px;width:88%;margin-bottom:5px"></div>
+                <div class="sk" style="height:17px;width:28%;margin-top:7px"></div>
+            </div>
+        </div>
+        <div class="pcard" style="pointer-events:none">
+            <div class="sk picon"></div>
+            <div class="pbody">
+                <div class="sk" style="height:13px;width:55%;margin-bottom:7px"></div>
+                <div class="sk" style="height:10px;width:32%;margin-bottom:9px"></div>
+                <div class="sk" style="height:17px;width:28%;margin-top:7px"></div>
+            </div>
+        </div>
+    </div>
+    <div id="menu-list" style="display:none"></div>
+</div>
+
+<div id="nequi-wrap"></div>
+<footer><p>🍽️ Menú Digital · Precios en COP</p></footer>
+
+<script>
+// ── CONFIG (autónomo, sin app.js) ──
+var API_BASE = "https://sistema-restaurante-ii.onrender.com/api";
+
+var urlParams = new URLSearchParams(window.location.search);
+var restId = urlParams.get('rest');
+
+var fullMenu = [];
+var cats = new Set();
+var activeCat = 'Todos';
+
+function cop(n) {
+    return new Intl.NumberFormat('es-CO', {style:'currency',currency:'COP',minimumFractionDigits:0}).format(n || 0);
+}
+
+function icon(cat) {
+    if (!cat) return null;
+    var c = cat.toLowerCase();
+    if (c.includes('bebida') || c.includes('jugo')) return 'cup-soda';
+    if (c.includes('postre') || c.includes('dulce')) return 'cake';
+    if (c.includes('pizza')) return 'pizza';
+    if (c.includes('ensalada') || c.includes('verdura')) return 'salad';
+    if (c.includes('hamburguesa') || c.includes('burger')) return 'beef';
+    if (c.includes('sopa') || c.includes('caldo')) return 'soup';
+    if (c.includes('desayuno') || c.includes('huevo')) return 'egg';
+    if (c.includes('pescado') || c.includes('mariscos')) return 'fish';
+    if (c.includes('pollo')) return 'drumstick';
+    return 'utensils';
+}
+
+// ── LOAD ALL ──
+async function loadAll() {
+    if (!restId) {
+        hideSk();
+        document.getElementById('menu-list').innerHTML =
+            '<div class="empty"><p>Escanea un QR válido para ver el menú.</p></div>';
+        document.getElementById('menu-list').style.display = 'block';
+        return;
+    }
+
+    try {
+        var results = await Promise.allSettled([
+            fetch(API_BASE + '/menu/' + restId),
+            fetch(API_BASE + '/restaurants/' + restId + '/info'),
+            fetch(API_BASE + '/restaurants/' + restId + '/config')
+        ]);
+
+        // Info del restaurante
+        var infoR = results[1];
+        if (infoR.status === 'fulfilled' && infoR.value.ok) {
+            var info = await infoR.value.json();
+            document.getElementById('rest-name').textContent = info.name || 'Menú Digital';
+            document.title = (info.name || 'Menú') + ' — Menú Digital';
+        } else {
+            document.getElementById('rest-name').textContent = 'Menú Digital';
+        }
+
+        // Config (tema + nequi)
+        var cfgR = results[2];
+        if (cfgR.status === 'fulfilled' && cfgR.value.ok) {
+            var cfg = await cfgR.value.json();
+            applyConfig(cfg);
+        }
+
+        // Menú
+        var menuR = results[0];
+        if (menuR.status === 'fulfilled' && menuR.value.ok) {
+            fullMenu = await menuR.value.json();
+            fullMenu.forEach(function(it) { if (it.category) cats.add(it.category); });
+            buildCats();
+            renderMenu(fullMenu);
+        } else {
+            hideSk();
+            document.getElementById('menu-list').style.display = 'block';
+            document.getElementById('menu-list').innerHTML = '<div class="empty"><p>No se pudo cargar el menú.</p></div>';
+        }
+    } catch(e) {
+        hideSk();
+        document.getElementById('menu-list').style.display = 'block';
+        document.getElementById('menu-list').innerHTML = '<div class="empty"><p>Error de conexión.</p></div>';
+    }
+}
+
+function applyConfig(cfg) {
+    // Subtítulo
+    if (cfg.menu_banner_title) document.getElementById('rest-subtitle').textContent = cfg.menu_banner_title;
+    // Color fondo hero
+    if (cfg.menu_bg_color) {
+        document.getElementById('hero').style.background =
+            'linear-gradient(135deg,' + cfg.menu_bg_color + ' 0%,' + dimColor(cfg.menu_bg_color, -30) + ' 100%)';
+        document.documentElement.style.setProperty('--brand', cfg.menu_bg_color);
+    }
+    // Imagen fondo
+    if (cfg.menu_bg_image) {
+        var bg = document.getElementById('hero-bg');
+        bg.src = cfg.menu_bg_image;
+        bg.style.display = 'block';
+    }
+    // Nequi
+    if (cfg.nequi_number || cfg.nequi_qr) {
+        document.getElementById('nequi-wrap').innerHTML =
+            '<div class="ncard">' +
+            '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>' +
+            '<h3>Paga con Nequi</h3>' +
+            '<p>Escanea el QR o transfiere al número:</p>' +
+            (cfg.nequi_number ? '<div class="nnum">' + cfg.nequi_number + '</div>' : '') +
+            (cfg.nequi_qr ? '<img src="' + cfg.nequi_qr + '" alt="Nequi QR">' : '') +
+            '</div>';
+    }
+}
+
+function dimColor(hex, amt) {
+    var h = hex.replace('#','');
+    if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    var num = parseInt(h, 16);
+    var r = Math.min(255,Math.max(0,(num>>16)+amt));
+    var g = Math.min(255,Math.max(0,((num>>8)&0xff)+amt));
+    var b = Math.min(255,Math.max(0,(num&0xff)+amt));
+    return '#'+[r,g,b].map(function(x){return x.toString(16).padStart(2,'0');}).join('');
+}
+
+// ── CATEGORIES ──
+function buildCats() {
+    var wrap = document.getElementById('cats');
+    wrap.innerHTML = '<button class="cat on" id="cat-Todos" onclick="selectCat(\'Todos\')">Todos</button>';
+    cats.forEach(function(c) {
+        var safe = c.replace(/['"]/g,'');
+        wrap.innerHTML += '<button class="cat" id="cat-' + c.replace(/\s+/g,'_') +
+            '" onclick="selectCat(\'' + safe + '\')">' + c + '</button>';
+    });
+}
+
+function selectCat(c) {
+    activeCat = c;
+    document.querySelectorAll('.cat').forEach(function(b){ b.classList.remove('on'); });
+    var el = document.getElementById('cat-' + (c === 'Todos' ? 'Todos' : c.replace(/\s+/g,'_')));
+    if (el) el.classList.add('on');
+    filterMenu();
+}
+
+function filterMenu() {
+    var term = document.getElementById('search-input').value.toLowerCase().trim();
+    var filtered = fullMenu.filter(function(it) {
+        var mc = activeCat === 'Todos' || it.category === activeCat;
+        var mt = !term ||
+            (it.name||'').toLowerCase().includes(term) ||
+            (it.description||'').toLowerCase().includes(term) ||
+            (it.category||'').toLowerCase().includes(term);
+        return mc && mt;
+    });
+    renderMenu(filtered);
+}
+
+// ── RENDER ──
+function hideSk() {
+    var sk = document.getElementById('skeletons');
+    if (sk) sk.style.display = 'none';
+}
+
+function renderMenu(items) {
+    hideSk();
+    var list = document.getElementById('menu-list');
+    list.style.display = 'block';
+    list.innerHTML = '';
+
+    if (!items || items.length === 0) {
+        list.innerHTML = '<div class="empty"><p>No se encontraron productos.</p></div>';
+        return;
+    }
+
+    // Agrupar por categoría
+    var groups = {};
+    items.forEach(function(it) {
+        var c = it.category || 'General';
+        if (!groups[c]) groups[c] = [];
+        groups[c].push(it);
+    });
+
+    var searchActive = document.getElementById('search-input').value.trim() !== '';
+    var keys = Object.keys(groups);
+
+    if (keys.length === 1 || searchActive) {
+        items.forEach(function(it) { list.appendChild(makeCard(it)); });
+    } else {
+        keys.forEach(function(c) {
+            var lbl = document.createElement('div');
+            lbl.className = 'sec-lbl';
+            lbl.textContent = c;
+            list.appendChild(lbl);
+            groups[c].forEach(function(it) { list.appendChild(makeCard(it)); });
+        });
+    }
+}
+
+function makeCard(item) {
+    var ic = icon(item.category) || 'utensils';
+    var avail = item.stock > 0;
+    var div = document.createElement('div');
+    div.className = 'pcard';
+    div.innerHTML =
+        '<div class="picon"><i data-lucide="' + ic + '" style="width:26px;height:26px;color:#94a3b8"></i></div>' +
+        '<div class="pbody">' +
+            '<div class="pname">' + esc(item.name) + '</div>' +
+            '<div class="pcat">' + esc(item.category || 'General') + '</div>' +
+            (item.description ? '<div class="pdesc">' + esc(item.description) + '</div>' : '') +
+            '<div class="pfooter">' +
+                '<span class="pprice">' + cop(item.price) + '</span>' +
+                '<span class="badge ' + (avail ? 'ok' : 'out') + '">' + (avail ? 'Disponible' : 'Agotado') + '</span>' +
+            '</div>' +
+        '</div>';
+    // Init lucide icon after appending
+    setTimeout(function() { if(window.lucide) lucide.createIcons({el: div}); }, 0);
+    return div;
+}
+
+function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── DARK MODE ──
+function toggleDark() {
+    document.body.classList.toggle('dark');
+}
+
+// Auto-detect
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark');
+}
+
+// ── START ──
+loadAll();
+</script>
+</body>
+</html>

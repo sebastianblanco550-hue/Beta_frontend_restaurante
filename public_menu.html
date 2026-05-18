@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:      #111;
+            --surface: #1c1c1c;
+            --card:    #222;
+            --text:    #f0ebe0;
+            --muted:   #9e9480;
+            --accent:  #f59e0b;
+            --accent2: #e8e0cc;
+            --border:  rgba(255,255,255,0.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+        /* ── HERO ── */
+        #hero {
+            position: relative;
+            background: var(--surface);
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            padding: 36px 48px;
+            gap: 32px;
+            overflow: hidden;
+            border-bottom: 3px solid var(--accent);
+        }
+        #hero-bg-img {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.15;
+            display: none;
+        }
+        .hero-logo {
+            position: relative;
+            width: 96px; height: 96px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            overflow: hidden;
+            background: #2a2a2a;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 6px rgba(245,158,11,0.15);
+        }
+        .hero-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-initial { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: var(--accent); }
+        .hero-body { position: relative; }
+        .hero-pretitle {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+        #hero-name {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 3.8rem);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+        #hero-slogan {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-top: 8px;
+            font-style: italic;
+        }
+        #hero-contact {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        #hero-contact span {
+            font-size: 0.8rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ── STICKY NAV ── */
+        #sticky-nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(17,17,17,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        #menu-search {
+            padding: 7px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            font-size: 0.82rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            min-width: 160px;
+            flex: 1;
+            max-width: 220px;
+            transition: border-color 0.2s;
+        }
+        #menu-search::placeholder { color: var(--muted); }
+        #menu-search:focus { border-color: var(--accent); }
+        #cats-nav { display: flex; gap: 6px; flex-wrap: wrap; }
+        .cat-btn {
+            padding: 5px 14px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--muted);
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .cat-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .cat-btn.active { background: var(--accent); border-color: var(--accent); color: #111; }
+
+        /* ── MAIN LAYOUT ── */
+        #menu-wrap {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+        #menu-wrap.single-col { grid-template-columns: 1fr; }
+
+        /* ── CATEGORY SECTION ── */
+        .section-card {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            animation: fadeUp 0.3s ease both;
+        }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+        .section-header {
+            background: linear-gradient(90deg, #1a1a1a, var(--card));
+            border-bottom: 2px solid var(--accent);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-icon {
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+        .section-count {
+            margin-left: auto;
+            font-size: 0.7rem;
+            color: var(--muted);
+            background: rgba(255,255,255,0.06);
+            padding: 2px 8px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+        .section-items { padding: 8px 0; }
+
+        /* ── ITEM ── */
+        .menu-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 20px;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.15s;
+        }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:hover { background: rgba(255,255,255,0.03); }
+        .menu-item.agotado { opacity: 0.45; }
+        .item-body { flex: 1; min-width: 0; }
+        .item-name {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+        }
+        .item-desc {
+            font-size: 0.76rem;
+            color: var(--muted);
+            margin-top: 3px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .item-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .item-price {
+            background: var(--accent);
+            color: #111;
+            font-size: 0.82rem;
+            font-weight: 800;
+            padding: 5px 11px;
+            border-radius: 20px;
+            white-space: nowrap;
+            line-height: 1;
+        }
+        .stock-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 2px 7px;
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+        .badge-out { background: rgba(127,29,29,0.8); color: #fca5a5; }
+        .badge-low { background: rgba(120,53,15,0.8); color: #fde68a; }
+
+        /* ── FULL-WIDTH SECTION ── */
+        .section-card.full-width { grid-column: 1 / -1; }
+
+        /* ── NEQUI ── */
+        #nequi-band {
+            max-width: 1080px;
+            margin: 0 auto 40px;
+            padding: 0 24px;
+        }
+        #nequi-card {
+            background: linear-gradient(135deg, #2d1b69, #1e1b4b);
+            border-radius: 12px;
+            padding: 24px 28px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid rgba(139,92,246,0.3);
+            flex-wrap: wrap;
+        }
+        .nq-icon { font-size: 2.5rem; flex-shrink: 0; }
+        .nq-body h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--accent); margin-bottom: 3px; }
+        .nq-body p { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+        .nq-num { font-size: 1.4rem; font-weight: 800; color: #fff; letter-spacing: 2px; margin-top: 6px; }
+        #nequi-qr { width: 72px; height: 72px; border-radius: 8px; border: 2px solid var(--accent); background: #fff; object-fit: contain; margin-left: auto; }
+
+        /* ── EMPTY / LOADER ── */
+        #loader-wrap {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            color: var(--muted);
+            gap: 12px;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .spin {
+            width: 20px; height: 20px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: rot 0.7s linear infinite;
+        }
+        @keyframes rot { to { transform: rotate(360deg); } }
+        #empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--muted);
+        }
+        #empty-state .big { font-size: 3.5rem; margin-bottom: 12px; }
+
+        /* ── FOOTER ── */
+        footer {
+            text-align: center;
+            padding: 18px;
+            color: var(--muted);
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 680px) {
+            #hero { padding: 24px 20px; flex-direction: column; align-items: flex-start; min-height: auto; }
+            #menu-wrap { grid-template-columns: 1fr; padding: 20px 14px 60px; gap: 16px; }
+            .section-card.full-width { grid-column: 1; }
+            #sticky-nav { padding: 8px 14px; }
+            #menu-search { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<header id="hero">
+    <img id="hero-bg-img" src="" alt="">
+    <div class="hero-logo" id="hero-logo">
+        <span class="hero-initial" id="hero-initial">🍽</span>
+    </div>
+    <div class="hero-body">
+        <div class="hero-pretitle">— Menú —</div>
+        <h1 id="hero-name">Cargando...</h1>
+        <p id="hero-slogan"></p>
+        <div id="hero-contact"></div>
+    </div>
+</header>
+
+<div id="sticky-nav">
+    <input type="search" id="menu-search" placeholder="🔍 Buscar..." oninput="filterMenu()">
+    <div id="cats-nav"></div>
+</div>
+
+<div id="menu-wrap">
+    <div id="loader-wrap"><div class="spin"></div>Cargando menú...</div>
+</div>
+
+<div id="nequi-band"></div>
+
+<footer>🍽️ &nbsp; Menú Digital &nbsp;·&nbsp; Precios en COP</footer>
+
+<script>
+var API_BASE = "https://beta-restaurante.onrender.com/api";
+var restId   = new URLSearchParams(window.location.search).get('rest');
+
+var fullMenu = [];
+var catOrder = [];
+var activeCat = 'Todos';
+
+var CAT_ICONS = {
+    comida:'🍽️', bebida:'🥤', postre:'🍰', hamburguesa:'🍔', pizza:'🍕',
+    ensalada:'🥗', pollo:'🍗', pescado:'🐟', sopa:'🥣', desayuno:'🍳',
+    arroz:'🍚', pasta:'🍝', tacos:'🌮', helado:'🍦', cafe:'☕',
+    sandwich:'🥪', entrada:'🥙', carne:'🥩', mariscos:'🦐', especial:'⭐'
+};
+
+function catIcon(cat) {
+    var k = (cat||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'');
+    for (var key in CAT_ICONS) { if (k.includes(key)) return CAT_ICONS[key]; }
+    return '🍴';
+}
+
+function cop(n) {
+    return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0}).format(n);
+}
+
+function stockBadge(stock) {
+    if (stock===null||stock===undefined||stock>10) return '';
+    if (stock<=0) return '<div class="stock-badge badge-out">Agotado</div>';
+    return '<div class="stock-badge badge-low">Últimas '+stock+'</div>';
+}
+
+// ── RENDER ──
+function renderMenu(items) {
+    var wrap = document.getElementById('menu-wrap');
+    if (!items || items.length === 0) {
+        wrap.innerHTML = '<div id="empty-state"><div class="big">🍽️</div><p>No hay platillos disponibles</p></div>';
+        return;
+    }
+
+    // Group preserving order
+    var grouped = {}, order = [];
+    items.forEach(function(it) {
+        var c = it.category || 'General';
+        if (!grouped[c]) { grouped[c] = []; order.push(c); }
+        grouped[c].push(it);
+    });
+
+    var html = '';
+    order.forEach(function(cat, idx) {
+        var catItems = grouped[cat];
+        // Sections with many items span full width
+        var full = catItems.length >= 6 ? ' full-width' : '';
+        var delay = idx * 60;
+
+        var itemsHtml = catItems.map(function(it) {
+            var out = it.stock!==null && it.stock!==undefined && it.stock<=0;
+            return '<div class="menu-item' + (out?' agotado':'') + '">' +
+                '<div class="item-body">' +
+                '<div class="item-name">' + it.name + '</div>' +
+                (it.description ? '<div class="item-desc">' + it.description + '</div>' : '') +
+                '</div>' +
+                '<div class="item-right">' +
+                '<div class="item-price">' + cop(it.price) + '</div>' +
+                stockBadge(it.stock) +
+                '</div></div>';
+        }).join('');
+
+        html += '<div class="section-card' + full + '" style="animation-delay:' + delay + 'ms">' +
+            '<div class="section-header">' +
+            '<span class="section-icon">' + catIcon(cat) + '</span>' +
+            '<span class="section-title">' + cat + '</span>' +
+            '<span class="section-count">' + catItems.length + ' platillos</span>' +
+            '</div>' +
+            '<div class="section-items">' + itemsHtml + '</div>' +
+            '</div>';
+    });
+
+    wrap.innerHTML = html;
+}
+
+// ── CATEGORY NAV ──
+function buildCatNav() {
+    var nav = document.getElementById('cats-nav');
+    var all = ['Todos'].concat(catOrder);
+    nav.innerHTML = all.map(function(c) {
+        return '<button class="cat-btn'+(c===activeCat?' active':'')+'" onclick="setCat(\''+c.replace(/'/g,"\\'")+'\')">'+(c==='Todos'?'Todos':catIcon(c)+' '+c)+'</button>';
+    }).join('');
+}
+
+function setCat(cat) {
+    activeCat = cat;
+    buildCatNav();
+    var list = cat==='Todos' ? fullMenu : fullMenu.filter(function(i){return i.category===cat;});
+    var term  = document.getElementById('menu-search').value.toLowerCase();
+    if (term) list = list.filter(function(i){return i.name.toLowerCase().includes(term)||(i.description||'').toLowerCase().includes(term);});
+    renderMenu(list);
+}
+
+function filterMenu() {
+    var term = document.getElementById('menu-search').value.toLowerCase();
+    var list = activeCat==='Todos' ? fullMenu : fullMenu.filter(function(i){return i.category===activeCat;});
+    if (term) list = list.filter(function(i){return i.name.toLowerCase().includes(term)||(i.description||'').toLowerCase().includes(term);});
+    renderMenu(list);
+}
+
+// ── LOAD ALL ──
+async function init() {
+    if (!restId) {
+        document.getElementById('hero-name').textContent = 'QR Inválido';
+        document.getElementById('menu-wrap').innerHTML = '<div id="empty-state"><div class="big">😕</div><p>Escanea un QR válido</p></div>';
+        return;
+    }
+
+    // Fetch config + menu + name in parallel
+    var [cfgRes, menuRes, nameRes] = await Promise.allSettled([
+        fetch(API_BASE + '/restaurants/' + restId + '/config'),
+        fetch(API_BASE + '/menu/' + restId),
+        fetch(API_BASE + '/restaurants/' + restId + '/name')
+    ]);
+
+    // ── Apply config ──
+    if (cfgRes.status === 'fulfilled' && cfgRes.value.ok) {
+        var cfg = await cfgRes.value.json();
+
+        if (cfg.menu_accent_color) {
+            document.documentElement.style.setProperty('--accent', cfg.menu_accent_color);
+        }
+        if (cfg.menu_bg_color) {
+            document.documentElement.style.setProperty('--bg', cfg.menu_bg_color);
+            document.documentElement.style.setProperty('--surface', adjustBrightness(cfg.menu_bg_color, 12));
+            document.documentElement.style.setProperty('--card', adjustBrightness(cfg.menu_bg_color, 20));
+        }
+        if (cfg.menu_bg_image) {
+            var bi = document.getElementById('hero-bg-img');
+            bi.src = cfg.menu_bg_image; bi.style.display = 'block';
+        }
+        if (cfg.menu_logo_url) {
+            document.getElementById('hero-logo').innerHTML = '<img src="'+cfg.menu_logo_url+'" alt="Logo">';
+        }
+        if (cfg.menu_banner_title) {
+            document.getElementById('hero-name').textContent = cfg.menu_banner_title;
+            document.title = cfg.menu_banner_title + ' · Menú Digital';
+        }
+        if (cfg.menu_description) {
+            document.getElementById('hero-slogan').textContent = cfg.menu_description;
+        }
+
+        // Phone & address
+        var contactEl = document.getElementById('hero-contact');
+        var lines = '';
+        if (cfg.menu_address && cfg.menu_address.trim()) lines += '<span>📍 ' + cfg.menu_address + '</span>';
+        if (cfg.menu_phone && cfg.menu_phone.trim())     lines += '<span>📞 ' + cfg.menu_phone + '</span>';
+        contactEl.innerHTML = lines;
+
+        // Nequi
+        if (cfg.nequi_number || cfg.nequi_qr) {
+            document.getElementById('nequi-band').innerHTML =
+                '<div id="nequi-card">' +
+                '<div class="nq-icon">📲</div>' +
+                '<div class="nq-body"><h3>Paga con Nequi</h3><p>Transfiere al número o escanea el QR</p>' +
+                '<div class="nq-num">' + (cfg.nequi_number || '') + '</div></div>' +
+                (cfg.nequi_qr ? '<img id="nequi-qr" src="'+cfg.nequi_qr+'" alt="QR">' : '') +
+                '</div>';
+        }
+    }
+
+    // ── Apply name ──
+    if (nameRes.status === 'fulfilled' && nameRes.value.ok) {
+        var nd = await nameRes.value.json();
+        var heroName = document.getElementById('hero-name');
+        if (heroName.textContent === 'Cargando...') {
+            heroName.textContent = nd.name || '';
+            document.title = (nd.name || 'Menú') + ' · Menú Digital';
+        }
+        var ini = document.getElementById('hero-initial');
+        if (ini && nd.name) ini.textContent = nd.name.charAt(0).toUpperCase();
+    }
+
+    // ── Apply menu ──
+    if (menuRes.status === 'fulfilled' && menuRes.value.ok) {
+        fullMenu = await menuRes.value.json();
+        var seen = {};
+        fullMenu.forEach(function(i) {
+            if (i.category && !seen[i.category]) { seen[i.category] = true; catOrder.push(i.category); }
+        });
+        buildCatNav();
+        renderMenu(fullMenu);
+    } else {
+        document.getElementById('menu-wrap').innerHTML = '<div id="empty-state"><div class="big">😕</div><p>No se pudo cargar el menú</p></div>';
+    }
+}
+
+// Helper: lighten hex by N points
+function adjustBrightness(hex, amount) {
+    try {
+        hex = hex.replace('#','');
+        if (hex.length===3) hex = hex.split('').map(function(c){return c+c;}).join('');
+        var r = Math.min(255, parseInt(hex.substr(0,2),16)+amount);
+        var g = Math.min(255, parseInt(hex.substr(2,2),16)+amount);
+        var b = Math.min(255, parseInt(hex.substr(4,2),16)+amount);
+        return '#' + [r,g,b].map(function(v){return v.toString(16).padStart(2,'0');}).join('');
+    } catch(e) { return hex; }
+}
+
+init();
+</script>
+</body>
+</html>
